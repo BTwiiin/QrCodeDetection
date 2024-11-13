@@ -1,0 +1,3 @@
+train: /Users/milanadedovich/PycharmProjects/QrCodeDetection/datasets/train/images
+val: /Users/milanadedovich/PycharmProjects/QrCodeDetection/datasets/val/images
+nc: 1

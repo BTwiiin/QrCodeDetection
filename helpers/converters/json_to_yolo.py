@@ -37,7 +37,6 @@ def batch_convert_to_yolo_format(json_dir, output_dir, class_id=0):
 
     for json_file in os.listdir(json_dir):
         if json_file.endswith(".json"):
-            print(1)
             json_path = os.path.join(json_dir, json_file)
             convert_to_yolo_format(json_path, output_dir, class_id=class_id)
 

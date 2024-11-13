@@ -3,12 +3,12 @@ import random
 import json
 from PIL import Image
 import qrcode
+from helpers.converters.json_to_yolo import batch_convert_to_yolo_format
 
 
 def add_qr_code_with_annotation(image_path, output_image_path, annotation_path, qr_data="Sample QR Code Data"):
     try:
         image = Image.open(image_path).convert("RGB")
-
         # Generate QR code with an alpha channel
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=2)
         qr.add_data(qr_data)
@@ -63,7 +63,7 @@ def annotate_image(output_image_path, qr_img, image, qr_data, x, y, annotation_p
 def generate_data(image_dir, output_dir, annotation_dir):
     # Process all images in the FUNSD dataset
     for image_filename in os.listdir(image_dir):
-        if image_filename.endswith(".png"):  # Assuming FUNSD images are in PNG format
+        if image_filename.endswith(".png") or image_filename.endswith(".jpg"):  # Assuming FUNSD images are in PNG format
             image_path = os.path.join(image_dir, image_filename)
             output_image_path = os.path.join(output_dir, image_filename)
             annotation_path = os.path.join(annotation_dir, f"{os.path.splitext(image_filename)[0]}.json")
