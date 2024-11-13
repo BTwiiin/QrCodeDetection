@@ -1,6 +1,7 @@
+import torch
 from ultralytics import YOLO
-from helpers import directories
 from helpers import display
+from helpers import directories
 
 funsd_image_dir = "data/docs-sm"
 output_dir = "data/images_qr"
@@ -15,16 +16,26 @@ if __name__ == '__main__':
     # directories.process_all_annotation_dirs("data/images_annotations", "data/labels")
     # directories.split_files("data/labels", "datasets/train/labels", "datasets/val/labels")
     # directories.split_files("data/images_qr", "datasets/train/images", "datasets/val/images")
-
-    # Training code
-
+    #
+    # # Training code
+    #
+    # print("GPU available", torch.cuda.is_available())
+    # print("Number of GPUs:", torch.cuda.device_count())
+    # #
     # model = YOLO("yolov5nu.pt")
-    # results = model.train(data="data.yaml", epochs=7)
+    # #
+    # if torch.cuda.is_available():
+    #     results = model.train(data="data.yaml", epochs=15, device=0)
+    #     print("Using GPU:", torch.cuda.current_device())
+    # else:
+    #     results = model.train(data="data.yaml", epochs=7)
+    #     print("Using CPU")
 
-    model = YOLO("runs/detect/train5/weights/best.pt")
+    model = YOLO("runs/detect/train9/weights/best.pt")
+
 
     # Perform prediction, predict returns list
-    results = model.predict("data/img.png")[0]
+    results = model.predict("img.png")[0]
 
     display.predicted_images_info_display(results.boxes)
-    # display.predicted_image_display("data/img.png", results.boxes)
+    display.predicted_image_display("img.png", results.boxes)

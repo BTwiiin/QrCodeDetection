@@ -9,36 +9,41 @@ from helpers.converters.json_to_yolo import batch_convert_to_yolo_format
 def add_qr_code_with_annotation(image_path, output_image_path, annotation_path, qr_data="Sample QR Code Data"):
     try:
         image = Image.open(image_path).convert("RGB")
+
         # Generate QR code with an alpha channel
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=2)
         qr.add_data(qr_data)
         qr.make(fit=True)
-        qr_img = qr.make_image(fill="black", back_color="white").convert("RGBA")  # Ensure QR code has an alpha channel
+        qr_img = qr.make_image(fill="black", back_color="white").convert("RGBA")
         print("QR code generated.")
 
         # Generate a random size for the QR code within a specified range
         qr_size = random.randint(50, 150)  # Adjust the range (e.g., between 50x50 and 150x150)
         qr_img = qr_img.resize((qr_size, qr_size))
 
-        # Get random position for QR code on the document
+        # Apply a random rotation angle
+        rotation_angle = random.uniform(-30, 30)  # Random slope angle between -30 and 30 degrees
+        qr_img = qr_img.rotate(rotation_angle, expand=True)
+
+        # Get random position for the rotated QR code on the document
         max_x = image.width - qr_img.width
         max_y = image.height - qr_img.height
         x = random.randint(0, max_x)
         y = random.randint(0, max_y)
 
-        # Overlay QR code on the image
+        # Overlay the rotated QR code on the image
         image.paste(qr_img, (x, y), qr_img)  # Use qr_img as both source and mask
         image.save(output_image_path)
         print(f"Image saved to {output_image_path}")
 
-        # Annotate image with QR code position and data
-        annotate_image(output_image_path, qr_img, image, qr_data, x, y, annotation_path)
+        # Annotate image with QR code position, size, rotation angle, and data
+        annotate_image(output_image_path, qr_img, image, qr_data, x, y, rotation_angle, annotation_path)
 
     except Exception as e:
         print(f"An error occurred: {e}")
 
 
-def annotate_image(output_image_path, qr_img, image, qr_data, x, y, annotation_path):
+def annotate_image(output_image_path, qr_img, image, qr_data, x, y, rotation_angle, annotation_path):
     annotation = {
         "file_name": os.path.basename(output_image_path),
         "width": image.width,
@@ -50,7 +55,8 @@ def annotate_image(output_image_path, qr_img, image, qr_data, x, y, annotation_p
                 "width": qr_img.width,
                 "height": qr_img.height
             },
-            "data": qr_data
+            "data": qr_data,
+            "rotation_angle": rotation_angle
         }
     }
 

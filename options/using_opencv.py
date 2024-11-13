@@ -1,8 +1,8 @@
 import cv2
 
 
-def qr_code_detect() -> bool:
-    img = cv2.imread('data/images_qr/83573282.png')
+def qr_code_detect(path_to_image) -> bool:
+    img = cv2.imread(path_to_image)
     detector = cv2.QRCodeDetector()
     value, pts = detector.detect(img)
 
